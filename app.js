@@ -22,9 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     const GROUP_MEMBERS = ['Ifeoluwa','Bolanle','Chidi','Esther'];
 
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const twoDaysAgo = new Date(today);
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+    const fmt = d => d.toISOString().slice(0,10);
+
     const chatData = {
         warehouse: {
-            name: 'Warehouse Team', avatarLetter: 'W', role: 'Logistics',
+            name: 'Warehouse Team', avatarLetter: 'W', role: 'Logistics', lastDate: fmt(today),
             messages: [
                 { id: 'w1', sender: 'You', time: '2:07 PM', text: 'am on a product', status: 'read' },
                 { id: 'w2', sender: 'Warehouse Team', time: '2:08 PM', text: "Got it, checking the inventory now. Which product ID?", status: 'read' },
@@ -34,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         ifeoluwa: {
-            name: 'Ifeoluwa', avatarLetter: 'I', role: 'Manager',
+            name: 'Ifeoluwa', avatarLetter: 'I', role: 'Manager', lastDate: fmt(yesterday),
             messages: [
                 { id: 'i1', sender: 'Ifeoluwa', time: '11:30 AM', text: 'Hey, can you review the Q4 financial report before I submit it?', status: 'read' },
                 { id: 'i2', sender: 'You', time: '11:45 AM', text: 'Sure, send it over. I\'ll take a look this afternoon.', status: 'read' },
@@ -43,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         sales: {
-            name: 'Sales Team', avatarLetter: 'S', role: 'Group', isGroup: true,
+            name: 'Sales Team', avatarLetter: 'S', role: 'Group', isGroup: true, lastDate: fmt(today),
             messages: [
                 { id: 's1', sender: 'Ifeoluwa', time: '10:00 AM', text: 'Team, we closed the Acme Corp deal! 🎉 Invoice INV-2024-0042 has been sent.', status: 'read' },
                 { id: 's2', sender: 'Bolanle', time: '10:05 AM', text: 'Amazing! That was a tough negotiation. Great work everyone!', status: 'read' },
@@ -349,16 +356,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== UPDATE CONVERSATION LIST =====
+    function getDateLabel(dateStr) {
+        if (!dateStr) return '';
+        const todayStr = fmt(today);
+        const yesterdayStr = fmt(yesterday);
+        if (dateStr === todayStr) return 'Today';
+        if (dateStr === yesterdayStr) return 'Yesterday';
+        const d = new Date(dateStr + 'T00:00:00');
+        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const now = new Date();
+        const diffDays = Math.floor((now - d) / (1000*60*60*24));
+        if (diffDays < 7) return days[d.getDay()];
+        return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+    }
+
     function updateConversationList(filter = 'all') {
         chatThreadsContainer.innerHTML = '';
-        Object.entries(chatData).forEach(([id, chat]) => {
-            const lastMsg = chat.messages[chat.messages.length - 1];
-            const hasUnread = chat.messages.some(m => m.sender !== 'You' && m.status === 'delivered');
-            const hasInvoice = chat.messages.some(m => m.type === 'invoice');
+        const entries = Object.entries(chatData)
+            .map(([id, chat]) => {
+                const lastMsg = chat.messages[chat.messages.length - 1];
+                const hasUnread = chat.messages.some(m => m.sender !== 'You' && m.status === 'delivered');
+                const hasInvoice = chat.messages.some(m => m.type === 'invoice');
+                return { id, chat, lastMsg, hasUnread, hasInvoice };
+            })
+            .filter(e => {
+                if (filter === 'unread' && !e.hasUnread) return false;
+                if (filter === 'invoices' && !e.hasInvoice) return false;
+                return true;
+            })
+            .sort((a, b) => {
+                const da = a.chat.lastDate || '';
+                const db = b.chat.lastDate || '';
+                if (da > db) return -1;
+                if (da < db) return 1;
+                return 0;
+            });
 
-            if (filter === 'unread' && !hasUnread) return;
-            if (filter === 'invoices' && !hasInvoice) return;
-
+        let lastDateLabel = '';
+        entries.forEach(({ id, chat, lastMsg, hasUnread, hasInvoice }) => {
+            const dateLabel = getDateLabel(chat.lastDate);
+            if (dateLabel && dateLabel !== lastDateLabel) {
+                lastDateLabel = dateLabel;
+                const header = document.createElement('div');
+                header.className = 'thread-date-header';
+                header.textContent = dateLabel;
+                chatThreadsContainer.appendChild(header);
+            }
             const item = document.createElement('div');
             item.className = `thread-item ${id === activeChatId ? 'active' : ''}`;
             item.dataset.chatId = id;
@@ -414,6 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newMsg = { id: generateId(), sender: 'You', time: timeStr, text, status: 'sending', reference };
         chatData[activeChatId].messages.push(newMsg);
+        chatData[activeChatId].lastDate = fmt(new Date());
 
         const el = renderMessage(newMsg);
         el.style.opacity = '0';
@@ -434,8 +478,8 @@ document.addEventListener('DOMContentLoaded', () => {
         referenceIdWrapper.classList.remove('visible');
         referenceIdInput.value = '';
 
-        // Simulate sent → delivered
         saveState();
+        updateConversationList();
         setTimeout(() => { newMsg.status = 'sent'; refreshStatus(); }, 500);
         setTimeout(() => { newMsg.status = 'delivered'; refreshStatus(); }, 1000);
         triggerAutoReply();
@@ -491,6 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const sender = chat.isGroup ? GROUP_MEMBERS[Math.floor(Math.random() * GROUP_MEMBERS.length)] : chat.name;
             const reply = { id: generateId(), sender, time: timeStr, text: response, status: 'read' };
             chat.messages.push(reply);
+            chat.lastDate = fmt(new Date());
             const el = renderMessage(reply);
             el.style.opacity = '0';
             messageFeed.appendChild(el);
@@ -498,6 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateThreadPreview(activeChatId, response);
             scrollToBottom();
             saveState();
+            updateConversationList();
             if (window.lucide) lucide.createIcons();
         }, delay);
     }
