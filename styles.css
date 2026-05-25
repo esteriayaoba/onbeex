@@ -224,7 +224,7 @@ body {
 .message-sender { font-size: 13px; font-weight: 700; color: var(--text-primary); }
 .message-time { font-size: 10px; color: var(--text-muted); }
 .message-bubble { padding: 10px 14px; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0 14px 14px 14px; font-size: 14px; line-height: 1.5; color: var(--text-primary); box-shadow: var(--shadow-sm); word-break: break-word; transition: background-color var(--transition-normal), border-color var(--transition-normal); position: relative; }
-.message-group.me .message-bubble { border-radius: 0 14px 14px 14px; }
+.message-group.me .message-bubble { background-color: var(--primary-light); border-color: rgba(0, 98, 84, 0.12); border-radius: 0 14px 14px 14px; }
 .message-group.them .message-bubble { background-color: var(--primary); color: white; border-radius: 14px 14px 0 14px; border-color: var(--primary); }
 .message-group.system { align-self: center; max-width: 100%; }
 .message-group.system .message-bubble { background: transparent; border: none; font-size: 12px; color: var(--text-muted); text-align: center; padding: 4px 12px; box-shadow: none; }
