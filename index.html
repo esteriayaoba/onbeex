@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onbeex | Messaging Redesign</title>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" role="complementary" aria-label="Sidebar navigation">
+            <div class="sidebar-brand">
+                <div class="brand-logo">O</div>
+                <span class="brand-name">Onbeex</span>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-group">
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="menu-group">
+                    <div class="menu-header">Stock</div>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="archive"></i>
+                        <span>Inventory</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="scan"></i>
+                        <span>Barcode Scanner</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="clipboard-check"></i>
+                        <span>Stock-Take</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="truck"></i>
+                        <span>Suppliers</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="tag"></i>
+                        <span>Categories</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="package"></i>
+                        <span>Products Taken</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="shopping-cart"></i>
+                        <span>Purchase Orders</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="arrow-left-right"></i>
+                        <span>Stock Movements</span>
+                    </a>
+                </div>
+
+                <div class="menu-group">
+                    <div class="menu-header">Finance</div>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="trending-up"></i>
+                        <span>Profit & Loss</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="credit-card"></i>
+                        <span>Expenses</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="wallet"></i>
+                        <span>Cash Reconciliation</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="file-text"></i>
+                        <span>Tax Reports</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="globe"></i>
+                        <span>Currency</span>
+                    </a>
+                </div>
+
+                <div class="menu-group">
+                    <div class="menu-header">People</div>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="users"></i>
+                        <span>Employees</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="user-check"></i>
+                        <span>Employee Audit</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="calendar-check"></i>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="message-square"></i>
+                        <span>Messaging</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="star"></i>
+                        <span>Loyalty</span>
+                    </a>
+                </div>
+
+                <div class="menu-group">
+                    <div class="menu-header">Branches</div>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="building"></i>
+                        <span>Branches</span>
+                    </a>
+                </div>
+
+                <div class="menu-group">
+                    <div class="menu-header">QR Tools</div>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="qr-code"></i>
+                        <span>QR Codes</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="bar-chart-3"></i>
+                        <span>QR Analytics</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i aria-hidden="true" class="menu-icon" data-lucide="history"></i>
+                        <span>Activity History</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-static">
+                <a href="#" class="menu-item">
+                    <i aria-hidden="true" class="menu-icon" data-lucide="settings"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i aria-hidden="true" class="menu-icon" data-lucide="help-circle"></i>
+                    <span>Tutorial</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i aria-hidden="true" class="menu-icon" data-lucide="activity"></i>
+                    <span>Operations</span>
+                </a>
+                <a href="#" class="menu-item menu-item-danger">
+                    <i aria-hidden="true" class="menu-icon" data-lucide="log-out"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="profile-card">
+                    <div class="profile-avatar">E</div>
+                    <div class="profile-info">
+                        <div class="profile-name">Esther Babatunde</div>
+                        <div class="profile-role">Owner</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-wrapper">
+            <!-- Top Navbar -->
+            <header class="top-navbar">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-root">Onbeex</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-active">Messaging</span>
+                </div>
+
+                <div class="search-container">
+                    <i aria-hidden="true" class="search-icon" data-lucide="search"></i>
+                    <input type="text" class="search-input" aria-label="Search" placeholder="Search products, invoices, customers...">
+                </div>
+
+                <div class="header-actions">
+                    <!-- Light/Dark Mode Switcher -->
+                    <button class="action-btn theme-toggle" id="theme-toggle-btn" aria-label="Toggle theme" title="Toggle Light/Dark Mode">
+                        <i aria-hidden="true" data-lucide="moon" id="theme-icon"></i>
+                    </button>
+                    
+                    <button class="action-btn" aria-label="Quick Messages" title="Quick Messages">
+                        <i aria-hidden="true" data-lucide="message-square"></i>
+                        <span class="badge-dot"></span>
+                    </button>
+
+                    <button class="action-btn" aria-label="Notifications" title="Notifications">
+                        <i aria-hidden="true" data-lucide="bell"></i>
+                    </button>
+
+                    <div class="user-profile-widget">
+                        <!-- User avatar -->
+                        <div class="profile-avatar profile-avatar-header">EB</div>
+                        <div class="widget-info">
+                            <span class="widget-name">Esther Babatunde</span>
+                            <span class="widget-role">Organization Owner</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Chat Workspace -->
+            <div class="workspace-content">
+                <div class="chat-card">
+                    
+                    <!-- Left Chats list Panel -->
+                    <div class="chats-list-pane">
+                        <div class="pane-header">
+                            <div class="pane-title-row">
+                                <h2 class="pane-title">Messages</h2>
+                                <button class="btn-new-chat" id="btn-new-chat">
+                                    <i aria-hidden="true" data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                                    <span>New Chat</span>
+                                </button>
+                            </div>
+                            <div class="chat-search-bar">
+                                <i aria-hidden="true" class="chat-search-icon" data-lucide="search"></i>
+                                <input type="text" class="chat-search-input" aria-label="Search chats" placeholder="Search chats...">
+                            </div>
+                        </div>
+
+                        <!-- Chat history threads -->
+                        <div class="chat-threads" id="chat-threads-container">
+                            <!-- Selected Active Thread -->
+                            <div class="thread-item active" data-chat-id="warehouse">
+                                <div class="thread-avatar">W</div>
+                                <div class="thread-details">
+                                    <div class="thread-meta">
+                                        <span class="thread-name">warehouse</span>
+                                        <span class="thread-time fraunces-num">2h ago</span>
+                                    </div>
+                                    <div class="thread-preview" id="thread-preview-warehouse">am on a product</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Inactive Thread -->
+                            <div class="thread-item" data-chat-id="ifeoluwa">
+                                <div class="thread-avatar">I</div>
+                                <div class="thread-details">
+                                    <div class="thread-meta">
+                                        <span class="thread-name">Ifeoluwa</span>
+                                        <span class="thread-time fraunces-num">1d ago</span>
+                                    </div>
+                                    <div class="thread-preview" id="thread-preview-ifeoluwa">Active yesterday</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Chat Window Pane -->
+                    <div class="chat-window-pane">
+                        <div class="window-header">
+                            <div class="active-chat-info">
+                                <div class="active-chat-avatar" id="active-chat-avatar">W</div>
+                                <div>
+                                    <div class="active-chat-name" id="active-chat-name">warehouse</div>
+                                    <div class="active-chat-status">
+                                        <span class="status-dot"></span>
+                                        <span>Active Now</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="header-action-group">
+                                <button class="action-btn" id="btn-conversation-search" aria-label="Search in conversation" title="Search in conversation">
+                                    <i aria-hidden="true" data-lucide="search" style="width: 18px; height: 18px;"></i>
+                                </button>
+                                <div class="dropdown-container">
+                                    <button class="action-btn" id="btn-more-options" aria-label="More options" title="More options">
+                                        <i aria-hidden="true" data-lucide="more-horizontal" style="width: 18px; height: 18px;"></i>
+                                    </button>
+                                    <div class="dropdown-menu" id="dropdown-menu">
+                                        <div class="dropdown-menu-item" data-action="clear">Clear chat</div>
+                                        <div class="dropdown-menu-item" data-action="mark-unread">Mark as unread</div>
+                                        <div class="dropdown-menu-item" data-action="archive">Archive</div>
+                                        <div class="dropdown-menu-item danger" data-action="block">Block</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Conversation Search Bar -->
+                        <div class="conversation-search-bar" id="conversation-search-bar">
+                            <i aria-hidden="true" data-lucide="search" style="width: 14px; height: 14px; flex-shrink: 0; color: var(--text-muted);"></i>
+                            <input type="text" class="conversation-search-input" id="conversation-search-input" placeholder="Search messages..." autocomplete="off">
+                            <button class="conversation-search-close" id="conversation-search-close">
+                                <i aria-hidden="true" data-lucide="x" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </div>
+
+                        <!-- Conversation Messages Feed -->
+                        <div class="message-feed" id="message-feed">
+                            <div class="date-divider">
+                                <div class="date-divider-line"></div>
+                                <span class="date-divider-text">Today</span>
+                            </div>
+
+                            <!-- Single Message from You (aligned to left like original screenshot) -->
+                            <div class="message-group me">
+                                <div class="message-avatar">Y</div>
+                                <div class="message-content-wrapper">
+                                    <div class="message-meta">
+                                        <span class="message-sender">You</span>
+                                        <span class="message-time fraunces-num">2:07 PM</span>
+                                    </div>
+                                    <div class="message-bubble">
+                                        am on a product
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input Console -->
+                        <div class="input-console-container">
+                            <div class="input-console-card">
+                                <div class="console-textarea-wrapper">
+                                    <textarea class="console-textarea" id="message-textarea" placeholder="Type a message..." rows="1"></textarea>
+                                </div>
+                                
+                                <div class="console-toolbar">
+                                    <div class="toolbar-left">
+                                        <!-- Attach Button -->
+                                        <button class="toolbar-btn-attach" type="button" title="Attach files">
+                                            <i aria-hidden="true" data-lucide="paperclip" style="width: 15px; height: 15px;"></i>
+                                            <span>Attach</span>
+                                        </button>
+
+                                        <!-- Reference Selector Dropdown -->
+                                        <div class="reference-select-wrapper">
+                                            <select class="console-select" id="reference-type-select">
+                                                <option value="none">No reference</option>
+                                                <option value="product">Product Reference</option>
+                                                <option value="invoice">Invoice Reference</option>
+                                                <option value="order">Order Reference</option>
+                                            </select>
+                                            <i aria-hidden="true" class="select-arrow" data-lucide="chevron-down"></i>
+                                        </div>
+
+                                        <!-- Reference ID Field (Animated/revealed) -->
+                                        <div class="reference-id-input-wrapper" id="reference-id-wrapper">
+                                            <input type="text" class="console-text-input fraunces-num" id="reference-id-input" placeholder="Reference ID">
+                                        </div>
+                                    </div>
+
+                                    <div class="toolbar-right">
+                                        <!-- Send Button -->
+                                        <button class="toolbar-btn-send" id="btn-send-message" type="button">
+                                            <span>Send</span>
+                                            <i aria-hidden="true" data-lucide="send" style="width: 14px; height: 14px;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>
