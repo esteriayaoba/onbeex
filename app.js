@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const chat = chatData[activeChatId];
         typingEl = document.createElement('div');
         typingEl.className = 'message-group them';
-        typingEl.innerHTML = `<div class="message-avatar" style="background-color:var(--primary);color:white;">${chat.avatarLetter}</div>
+        typingEl.innerHTML = `<div class="message-avatar">${chat.avatarLetter}</div>
             <div class="message-content-wrapper"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
         messageFeed.appendChild(typingEl);
         scrollToBottom();
