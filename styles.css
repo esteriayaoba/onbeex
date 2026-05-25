@@ -231,7 +231,7 @@ body {
 
 /* Message Status */
 .message-status { font-size: 11px; display: flex; align-items: center; gap: 2px; margin-top: 2px; }
-.message-group.them .message-status { justify-content: flex-end; }
+.message-group.me .message-status { justify-content: flex-end; }
 .message-status.sending { color: var(--text-muted); }
 .message-status.sent { color: var(--text-muted); }
 .message-status.delivered { color: var(--text-muted); }

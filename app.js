@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             content = `<div class="message-content-wrapper"><div class="message-bubble message-deleted">[Message deleted]</div></div>`;
         } else if (msg.type === 'invoice' && msg.invoice) {
             content = `<div class="message-content-wrapper">
-                ${showSender ? `<div class="message-meta"><span class="message-sender">${escapeHTML(senderName)}</span></div>` : ''}
+                <div class="message-meta">${showSender ? `<span class="message-sender">${escapeHTML(senderName)}</span>` : ''}<span class="message-time fraunces-num">${msg.time}</span></div>
                 <div class="invoice-card">
                     <div class="invoice-card-header"><span class="invoice-card-title">INVOICE</span><span class="invoice-card-number">${escapeHTML(msg.invoice.number)}</span></div>
                     <div class="invoice-card-body">
@@ -186,14 +186,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (msg.attachment) {
             const att = msg.attachment;
             content = `<div class="message-content-wrapper">
-                ${showSender ? `<div class="message-meta"><span class="message-sender">${escapeHTML(senderName)}</span><span class="message-time fraunces-num">${msg.time}</span></div>` : ''}
+                <div class="message-meta">${showSender ? `<span class="message-sender">${escapeHTML(senderName)}</span>` : ''}<span class="message-time fraunces-num">${msg.time}</span></div>
                 ${renderAttachmentGrid(att)}
                 ${msg.text ? `<div class="message-bubble" style="${!att ? '' : 'margin-top: 4px;'}">${escapeHTML(msg.text)}</div>` : ''}
                 ${renderStatus(msg)}
             </div>`;
         } else {
             content = `<div class="message-content-wrapper">
-                ${showSender ? `<div class="message-meta"><span class="message-sender">${escapeHTML(senderName)}</span><span class="message-time fraunces-num">${msg.time}</span></div>` : ''}
+                <div class="message-meta">${showSender ? `<span class="message-sender">${escapeHTML(senderName)}</span>` : ''}<span class="message-time fraunces-num">${msg.time}</span></div>
                 <div class="message-bubble">${escapeHTML(msg.text)}${msg.edited ? ' <span class="message-edited">(edited)</span>' : ''}</div>
                 ${renderStatus(msg)}
             </div>`;
@@ -249,16 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
             av.className = 'message-avatar';
             av.textContent = avatarLetter;
             group.insertBefore(av, group.firstChild);
-        }
-
-        if (!msg.deleted && msg.type !== 'system') {
-            const meta = group.querySelector('.message-meta');
-            if (meta) {
-                const timeSpan = document.createElement('span');
-                timeSpan.className = 'message-time fraunces-num';
-                timeSpan.textContent = msg.time;
-                meta.appendChild(timeSpan);
-            }
         }
 
         return group;
