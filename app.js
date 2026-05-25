@@ -312,16 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            chat.messages.forEach((msg, i, arr) => {
-                if (i > 0 && msg.type !== 'system') {
-                    const prev = arr[i-1];
-                    if (prev.sender !== msg.sender && prev.type !== 'system' && msg.type !== 'system') {
-                        const sep = document.createElement('div');
-                        sep.className = 'unread-separator';
-                        sep.innerHTML = '<div class="unread-separator-line"></div><span class="unread-separator-text">New messages</span><div class="unread-separator-line"></div>';
-                        messageFeed.appendChild(sep);
-                    }
-                }
+            chat.messages.forEach((msg) => {
                 const el = renderMessage(msg);
                 messageFeed.appendChild(el);
             });
