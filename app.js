@@ -22,7 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     const GROUP_MEMBERS = ['Ifeoluwa','Bolanle','Chidi','Esther'];
 
-    const today = new Date();
+    const ORG_EMPLOYEES = [
+        { name: 'Ifeoluwa', avatarLetter: 'I', role: 'Manager' },
+        { name: 'Bolanle', avatarLetter: 'B', role: 'Staff' },
+        { name: 'Chidi', avatarLetter: 'C', role: 'Accountant' },
+        { name: 'Warehouse Team', avatarLetter: 'W', role: 'Logistics' }
+    ];
+
+    let today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     const twoDaysAgo = new Date(today);
@@ -421,9 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const chat = chatData[chatId];
             activeChatAvatar.textContent = chat.avatarLetter;
             activeChatName.textContent = chat.name;
-            activeChatStatus.innerHTML = chat.isGroup
-                ? '<span style="font-size:12px;color:var(--text-muted)">3 members</span>'
-                : '<span class="status-dot"></span><span>Active Now</span>';
+            updateActiveChatHeader(chat);
             renderFeed(chatId);
             document.querySelectorAll('.thread-item').forEach(i => i.classList.toggle('active', i.dataset.chatId === chatId));
             messageTextarea.value = '';
@@ -914,6 +919,7 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (action) {
             case 'clear': if (confirm('Clear all messages?')) { chat.messages = []; renderFeed(activeChatId); updateThreadPreview(activeChatId, 'No messages yet'); showToast('Chat cleared', 'info'); } break;
             case 'mark-unread': showToast('Marked as unread', 'success'); break;
+            case 'add-people': addPeopleToChat(chat); break;
             case 'archive': showToast('Conversation archived', 'info'); break;
             case 'star': showToast('Conversation starred', 'success'); break;
             case 'block': if (confirm(`Block ${chat.name}?`)) showToast(`${chat.name} blocked`, 'info'); break;
@@ -990,16 +996,77 @@ document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
     });
 
+    // ===== ADD PEOPLE =====
+    function addPeopleToChat(chat) {
+        const names = prompt('Enter employee name(s) to add (comma-separated):');
+        if (!names || !names.trim()) return;
+        const added = [];
+        names.split(',').map(n => n.trim()).filter(n => n).forEach(n => {
+            if (!chat.members) chat.members = [];
+            const existing = chat.members.find(m => m.name.toLowerCase() === n.toLowerCase());
+            if (!existing) {
+                const orgMatch = ORG_EMPLOYEES.find(e => e.name.toLowerCase() === n.toLowerCase());
+                if (orgMatch) {
+                    chat.members.push({ ...orgMatch });
+                    added.push(orgMatch.name);
+                } else {
+                    chat.members.push({ name: n, avatarLetter: n.charAt(0).toUpperCase(), role: 'Member' });
+                    added.push(n);
+                }
+            }
+        });
+        if (added.length > 0) {
+            if (chat.members.length > 1) chat.isGroup = true;
+            showToast(`Added: ${added.join(', ')}`, 'success');
+            updateActiveChatHeader(chat);
+            updateConversationList();
+            saveState();
+        }
+    }
+
+    function updateActiveChatHeader(chat) {
+        if (chat.members && chat.members.length > 0) {
+            activeChatStatus.innerHTML = `${chat.members.length} participant(s)`;
+        } else {
+            activeChatStatus.innerHTML = '<span class="status-dot"></span><span>Active Now</span>';
+        }
+    }
+
     // ===== NEW CHAT =====
     btnNewChat.addEventListener('click', () => {
         const name = prompt('Enter chat name:');
         if (!name || !name.trim()) return;
         const id = name.trim().toLowerCase().replace(/\s+/g, '-');
         if (chatData[id]) { switchChat(id); return; }
-        chatData[id] = { name: name.trim(), avatarLetter: name.charAt(0).toUpperCase(), messages: [], role: 'Custom' };
+
+        const members = [];
+        let addMore = true;
+        while (addMore) {
+            const names = prompt('Add participant(s) — enter names separated by commas, or leave blank to skip:');
+            if (!names || !names.trim()) { addMore = false; break; }
+            names.split(',').map(n => n.trim()).filter(n => n).forEach(n => {
+                const existing = ORG_EMPLOYEES.find(e => e.name.toLowerCase() === n.toLowerCase());
+                if (existing && !members.find(m => m.name === existing.name)) {
+                    members.push({ ...existing });
+                } else if (!members.find(m => m.name === n)) {
+                    members.push({ name: n, avatarLetter: n.charAt(0).toUpperCase(), role: 'Member' });
+                }
+            });
+            if (members.length > 0) addMore = !confirm('Add more participants?');
+            else addMore = false;
+        }
+
+        chatData[id] = {
+            name: name.trim(),
+            avatarLetter: name.charAt(0).toUpperCase(),
+            messages: [],
+            role: 'Custom',
+            members: members.length > 0 ? members : null,
+            isGroup: members.length > 1
+        };
         updateConversationList();
         switchChat(id);
-        showToast('New conversation created', 'success');
+        showToast(members.length > 0 ? `Chat with ${members.length} participant(s)` : 'Conversation created', 'success');
         saveState();
     });
 
@@ -1025,12 +1092,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadState();
 
     // ===== INIT =====
-    const chat = chatData[activeChatId];
-    activeChatAvatar.textContent = chat.avatarLetter;
-    activeChatName.textContent = chat.name;
-    activeChatStatus.innerHTML = chat.isGroup
-        ? '<span style="font-size:12px;color:var(--text-muted)">3 members</span>'
-        : '<span class="status-dot"></span><span>Active Now</span>';
+    const initChat = chatData[activeChatId];
+    activeChatAvatar.textContent = initChat.avatarLetter;
+    activeChatName.textContent = initChat.name;
+    updateActiveChatHeader(initChat);
     renderFeed(activeChatId);
     updateConversationList();
 
