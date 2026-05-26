@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let searchIndex = -1;
     let isRecording = false;
     let isDark = false;
+    let lightboxKeyHandler = null;
 
     // ===== DOM REFS =====
     const $ = id => document.getElementById(id);
@@ -175,13 +176,32 @@ document.addEventListener('DOMContentLoaded', () => {
         group.className = `message-group ${msg.type === 'system' ? 'system' : (isMe ? 'me' : 'them')}`;
         group.dataset.messageId = msg.id;
 
+        // Render Quoted reply context if exist
+        let replyQuoteHTML = '';
+        if (msg.replyTo) {
+            const parentMsg = chatData[activeChatId]?.messages.find(m => m.id === msg.replyTo);
+            if (parentMsg) {
+                const parentSender = parentMsg.sender === 'You' ? 'You' : parentMsg.sender;
+                const parentText = parentMsg.text || (parentMsg.type === 'invoice' ? '📄 Invoice' : 'Attachment');
+                replyQuoteHTML = `
+                    <div class="reply-quote" onclick="const p = document.querySelector('[data-message-id=\\'${parentMsg.id}\\']'); if(p) p.scrollIntoView({behavior:\\'smooth\\',block:\\'center\\'})">
+                        <div class="reply-quote-content">
+                            <span class="reply-quote-name">${escapeHTML(parentSender)}</span>
+                            <span class="reply-quote-text">${escapeHTML(parentText)}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
         let content = '';
 
         if (msg.deleted) {
-            content = `<div class="message-content-wrapper"><div class="message-bubble message-deleted">[Message deleted]</div></div>`;
+            content = `<div class="message-content-wrapper">${replyQuoteHTML}<div class="message-bubble message-deleted">[Message deleted]</div></div>`;
         } else if (msg.type === 'invoice' && msg.invoice) {
             content = `<div class="message-content-wrapper">
                 <div class="message-meta">${showSender ? `<span class="message-sender">${escapeHTML(senderName)}</span>` : ''}<span class="message-time fraunces-num">${msg.time}</span></div>
+                ${replyQuoteHTML}
                 <div class="invoice-card">
                     <div class="invoice-card-header"><span class="invoice-card-title">INVOICE</span><span class="invoice-card-number">${escapeHTML(msg.invoice.number)}</span></div>
                     <div class="invoice-card-body">
@@ -201,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const att = msg.attachment;
             content = `<div class="message-content-wrapper">
                 <div class="message-meta">${showSender ? `<span class="message-sender">${escapeHTML(senderName)}</span>` : ''}<span class="message-time fraunces-num">${msg.time}</span></div>
+                ${replyQuoteHTML}
                 ${renderAttachmentGrid(att)}
                 ${msg.text ? `<div class="message-bubble" style="${!att ? '' : 'margin-top: 4px;'}">${escapeHTML(msg.text)}</div>` : ''}
                 ${renderStatus(msg)}
@@ -208,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             content = `<div class="message-content-wrapper">
                 <div class="message-meta">${showSender ? `<span class="message-sender">${escapeHTML(senderName)}</span>` : ''}<span class="message-time fraunces-num">${msg.time}</span></div>
+                ${replyQuoteHTML}
                 <div class="message-bubble">${escapeHTML(msg.text)}${msg.edited ? ' <span class="message-edited">(edited)</span>' : ''}</div>
                 ${renderStatus(msg)}
             </div>`;
@@ -220,13 +242,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const actions = document.createElement('div');
             actions.className = 'message-actions';
             actions.innerHTML = `
-                <button class="message-action-btn" title="Reply" data-action="reply"><i aria-hidden="true" data-lucide="reply" style="width: 14px;height:14px;"></i></button>
-                <button class="message-action-btn" title="React" data-action="react"><i aria-hidden="true" data-lucide="smile-plus" style="width: 14px;height:14px;"></i></button>
-                ${isMe ? `<button class="message-action-btn" title="Edit" data-action="edit"><i aria-hidden="true" data-lucide="pencil" style="width: 14px;height:14px;"></i></button>` : ''}
-                ${isMe ? `<button class="message-action-btn" title="Delete" data-action="delete"><i aria-hidden="true" data-lucide="trash-2" style="width: 14px;height:14px;"></i></button>` : ''}
-                <button class="message-action-btn" title="Copy" data-action="copy"><i aria-hidden="true" data-lucide="clipboard" style="width: 14px;height:14px;"></i></button>
-                <button class="message-action-btn" title="Pin" data-action="pin"><i aria-hidden="true" data-lucide="pin" style="width: 14px;height:14px;"></i></button>
-                <button class="message-action-btn" title="Thread" data-action="thread"><i aria-hidden="true" data-lucide="message-circle" style="width: 14px;height:14px;"></i></button>
+                <button class="message-action-btn" title="Reply" data-action="reply"><i aria-hidden="true" data-lucide="reply" class="icon-xs"></i></button>
+                <button class="message-action-btn" title="React" data-action="react"><i aria-hidden="true" data-lucide="smile-plus" class="icon-xs"></i></button>
+                ${isMe ? `<button class="message-action-btn" title="Edit" data-action="edit"><i aria-hidden="true" data-lucide="pencil" class="icon-xs"></i></button>` : ''}
+                ${isMe ? `<button class="message-action-btn" title="Delete" data-action="delete"><i aria-hidden="true" data-lucide="trash-2" class="icon-xs"></i></button>` : ''}
+                <button class="message-action-btn" title="Copy" data-action="copy"><i aria-hidden="true" data-lucide="clipboard" class="icon-xs"></i></button>
+                <button class="message-action-btn" title="Pin" data-action="pin"><i aria-hidden="true" data-lucide="pin" class="icon-xs"></i></button>
+                <button class="message-action-btn" title="Thread" data-action="thread"><i aria-hidden="true" data-lucide="message-circle" class="icon-xs"></i></button>
             `;
             group.appendChild(actions);
 
@@ -244,24 +266,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 group.appendChild(rDiv);
             }
 
-            // Reaction picker (quick)
+            // Reaction picker (quick popup)
             const rp = document.createElement('div');
             rp.className = 'reaction-picker';
             EMOJIS.slice(0, 6).forEach(e => {
                 const btn = document.createElement('button');
                 btn.className = 'reaction-option';
                 btn.textContent = e;
-                btn.onclick = (ev) => { ev.stopPropagation(); toggleReaction(msg.id, e); };
+                btn.onclick = (ev) => { ev.stopPropagation(); toggleReaction(msg.id, e); rp.classList.remove('active'); };
                 rp.appendChild(btn);
             });
             group.appendChild(rp);
         }
 
         // Avatars
-        if (!isThread && !isMe && !showSender) {
+        if (!isThread && msg.type !== 'system') {
             const av = document.createElement('div');
             av.className = 'message-avatar';
-            av.textContent = avatarLetter;
+            av.textContent = isMe ? 'EB' : avatarLetter;
             group.insertBefore(av, group.firstChild);
         }
 
@@ -293,12 +315,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const icons = { pdf: 'file-text', spreadsheet: 'grid', document: 'file-text' };
         const icon = icons[att.type] || 'file';
         return `<div class="attachment-file" onclick="alert('Opening: ${escapeHTML(att.name || 'file')}')">
-            <div class="attachment-file-icon"><i aria-hidden="true" data-lucide="${icon}" style="width:18px;height:18px;"></i></div>
+            <div class="attachment-file-icon"><i aria-hidden="true" data-lucide="${icon}" class="icon-md"></i></div>
             <div class="attachment-file-info">
                 <div class="attachment-file-name">${escapeHTML(att.name || 'document')}</div>
                 <div class="attachment-file-meta">${escapeHTML(att.size || '')}</div>
             </div>
-            <div class="attachment-file-download"><i aria-hidden="true" data-lucide="download" style="width:16px;height:16px;"></i></div>
+            <div class="attachment-file-download"><i aria-hidden="true" data-lucide="download" class="icon-sm"></i></div>
         </div>`;
     }
 
@@ -370,16 +392,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateConversationList(filter = 'all') {
         chatThreadsContainer.innerHTML = '';
+        const searchInput = document.querySelector('.chat-search-input');
+        const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
         const entries = Object.entries(chatData)
             .map(([id, chat]) => {
                 const lastMsg = chat.messages[chat.messages.length - 1];
-                const hasUnread = chat.messages.some(m => m.sender !== 'You' && m.status === 'delivered');
+                const unreadCount = chat.messages.filter(m => m.sender !== 'You' && m.status === 'delivered').length;
+                const hasUnread = unreadCount > 0;
                 const hasInvoice = chat.messages.some(m => m.type === 'invoice');
-                return { id, chat, lastMsg, hasUnread, hasInvoice };
+                return { id, chat, lastMsg, hasUnread, unreadCount, hasInvoice };
             })
             .filter(e => {
                 if (filter === 'unread' && !e.hasUnread) return false;
                 if (filter === 'invoices' && !e.hasInvoice) return false;
+                if (searchQuery && !e.chat.name.toLowerCase().includes(searchQuery)) return false;
                 return true;
             })
             .sort((a, b) => {
@@ -390,8 +417,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 return 0;
             });
 
+        if (entries.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'chat-empty-state';
+            empty.innerHTML = `
+                <div class="chat-empty-state-icon">💬</div>
+                <div style="font-weight:600;margin-bottom:2px;">No conversations found</div>
+                <div style="font-size:12px;opacity:0.7;">Try searching for a different conversation or name</div>
+            `;
+            chatThreadsContainer.appendChild(empty);
+            return;
+        }
+
         let lastDateLabel = '';
-        entries.forEach(({ id, chat, lastMsg, hasUnread, hasInvoice }) => {
+        entries.forEach(({ id, chat, lastMsg, hasUnread, unreadCount, hasInvoice }) => {
             const dateLabel = getDateLabel(chat.lastDate);
             if (dateLabel && dateLabel !== lastDateLabel) {
                 lastDateLabel = dateLabel;
@@ -412,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="thread-preview" id="preview-${id}">${lastMsg ? (escapeHTML(lastMsg.text || (lastMsg.type === 'invoice' ? '📄 Invoice' : ''))) : 'No messages yet'}</div>
                 </div>
-                ${hasUnread ? '<div class="thread-unread">1</div>' : ''}
+                ${hasUnread ? `<div class="thread-unread">${unreadCount}</div>` : ''}
                 ${chat.isGroup ? '<span class="thread-pinned">👥</span>' : ''}
             `;
             item.addEventListener('click', () => switchChat(id));
@@ -451,7 +490,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const refId = referenceIdInput.value.trim();
         const reference = refType !== 'none' && refId ? `${refType}: ${refId}` : null;
 
-        const newMsg = { id: generateId(), sender: 'You', time: timeStr, text, status: 'sending', reference };
+        const newMsg = {
+            id: generateId(),
+            sender: 'You',
+            time: timeStr,
+            text,
+            status: 'sending',
+            reference,
+            replyTo: replyToId
+        };
         chatData[activeChatId].messages.push(newMsg);
         chatData[activeChatId].lastDate = fmt(new Date());
 
@@ -473,6 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
         referenceTypeSelect.value = 'none';
         referenceIdWrapper.classList.remove('visible');
         referenceIdInput.value = '';
+        closeReply();
 
         saveState();
         updateConversationList();
@@ -601,7 +649,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const action = actionBtn.dataset.action;
         switch (action) {
             case 'reply': startReply(msg); break;
-            case 'react': toggleReaction(msgId, EMOJIS[Math.floor(Math.random() * EMOJIS.length)]); break;
+            case 'react':
+                const picker = group.querySelector('.reaction-picker');
+                if (picker) {
+                    document.querySelectorAll('.reaction-picker.active').forEach(p => {
+                        if (p !== picker) p.classList.remove('active');
+                    });
+                    picker.classList.toggle('active');
+                }
+                break;
             case 'edit': startEdit(msg); break;
             case 'delete': deleteMessage(msg); break;
             case 'copy': copyMessage(msg); break;
@@ -635,12 +691,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function deleteMessage(msg) {
         if (msg.sender !== 'You') return;
-        if (!confirm('Delete this message?')) return;
-        if (confirm('Delete for everyone?')) {
-            msg.deleted = true;
-        } else {
-            msg.deleted = true;
-        }
+        if (!confirm('Are you sure you want to delete this message? This action cannot be undone.')) return;
+        msg.deleted = true;
         renderFeed(activeChatId);
         showToast('Message deleted', 'info');
         saveState();
@@ -651,6 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard', 'success'));
     }
 
+    // Pinned messages simulation
     function pinMessage(msg) {
         showToast(`Message pinned`, 'success');
     }
@@ -746,20 +799,91 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===== VOICE NOTE =====
-    btnVoice.addEventListener('click', () => {
-        if (!isRecording) {
-            isRecording = true;
-            btnVoice.style.color = 'var(--danger)';
-            btnVoice.style.backgroundColor = 'var(--danger-light)';
-            showToast('Recording... Click mic to stop', 'info');
-        } else {
-            isRecording = false;
-            btnVoice.style.color = '';
-            btnVoice.style.backgroundColor = '';
-            const duration = Math.floor(Math.random() * 30) + 5;
-            const msg = { id: generateId(), sender: 'You', time: formatTime(new Date()), text: `🎤 Voice note (${duration}s)`, status: 'sent', attachment: { type: 'audio', name: 'Voice note', size: `${duration * 16} KB` } };
+    let recordingInterval = null;
+    let recordingSeconds = 0;
+
+    function startRecording() {
+        isRecording = true;
+        btnVoice.style.color = 'var(--danger)';
+        btnVoice.style.backgroundColor = 'var(--danger-light)';
+        
+        // Hide textarea
+        messageTextarea.style.display = 'none';
+        
+        // Create recording indicator
+        const indicator = document.createElement('div');
+        indicator.className = 'recording-indicator';
+        indicator.id = 'recording-indicator';
+        indicator.innerHTML = `
+            <div class="recording-dot"></div>
+            <span class="recording-timer" id="recording-timer">0:00</span>
+            <div style="flex: 1;"></div>
+            <button class="recording-cancel" id="recording-cancel" type="button">Cancel</button>
+        `;
+        
+        const wrapper = document.querySelector('.console-textarea-wrapper');
+        wrapper.appendChild(indicator);
+        
+        // Add listener for Cancel
+        document.getElementById('recording-cancel').addEventListener('click', (e) => {
+            e.stopPropagation();
+            stopRecording(false); // Discard
+        });
+        
+        // Start timer
+        recordingSeconds = 0;
+        recordingInterval = setInterval(() => {
+            recordingSeconds++;
+            const m = Math.floor(recordingSeconds / 60);
+            const s = (recordingSeconds % 60).toString().padStart(2, '0');
+            const timerEl = document.getElementById('recording-timer');
+            if (timerEl) timerEl.textContent = `${m}:${s}`;
+        }, 1000);
+        
+        // Change Send Button to "Send Audio"
+        btnSend.querySelector('span').textContent = 'Send Audio';
+        showToast('Recording voice note...', 'info');
+    }
+
+    function stopRecording(shouldSend) {
+        isRecording = false;
+        btnVoice.style.color = '';
+        btnVoice.style.backgroundColor = '';
+        
+        // Clear interval
+        clearInterval(recordingInterval);
+        recordingInterval = null;
+        
+        // Remove indicator & show textarea
+        const indicator = document.getElementById('recording-indicator');
+        if (indicator) indicator.remove();
+        messageTextarea.style.display = '';
+        
+        // Restore Send Button text
+        btnSend.querySelector('span').textContent = editingId ? 'Save' : 'Send';
+        
+        if (shouldSend && recordingSeconds > 0) {
+            const duration = recordingSeconds;
+            const msg = {
+                id: generateId(),
+                sender: 'You',
+                time: formatTime(new Date()),
+                text: `🎤 Voice note (${duration}s)`,
+                status: 'sent',
+                attachment: { type: 'audio', name: `Voice note (${duration}s)`, size: `${duration * 16} KB` }
+            };
             appendMessageAnimated(msg);
             showToast('Voice note sent', 'success');
+        } else {
+            showToast('Recording cancelled', 'info');
+        }
+    }
+
+    btnVoice.addEventListener('click', () => {
+        if (!isRecording) {
+            startRecording();
+        } else {
+            stopRecording(true); // Send
         }
     });
 
@@ -910,7 +1034,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== DROPDOWN =====
     function closeDropdown() { dropdownMenu.classList.remove('active'); }
     btnMoreOptions.addEventListener('click', (e) => { e.stopPropagation(); dropdownMenu.classList.toggle('active'); });
-    document.addEventListener('click', (e) => { if (!e.target.closest('.dropdown-container')) closeDropdown(); });
+    
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.dropdown-container')) closeDropdown();
+        if (!e.target.closest('.message-action-btn[data-action="react"]') && !e.target.closest('.reaction-picker')) {
+            document.querySelectorAll('.reaction-picker.active').forEach(p => p.classList.remove('active'));
+        }
+    });
+
     dropdownMenu.addEventListener('click', (e) => {
         const item = e.target.closest('.dropdown-menu-item');
         if (!item) return;
@@ -981,11 +1112,27 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('offline', updateOnlineStatus);
     updateOnlineStatus();
 
+    // ===== SHORTCUTS MODAL =====
+    const shortcutsModal = $('shortcuts-modal-overlay');
+    const btnCloseShortcuts = $('btn-close-shortcuts');
+    
+    function toggleShortcutsModal() {
+        if (shortcutsModal) shortcutsModal.classList.toggle('active');
+    }
+    
+    if (btnCloseShortcuts) btnCloseShortcuts.addEventListener('click', toggleShortcutsModal);
+    if (shortcutsModal) {
+        shortcutsModal.addEventListener('click', (e) => {
+            if (e.target === shortcutsModal) toggleShortcutsModal();
+        });
+    }
+
     // ===== KEYBOARD SHORTCUTS =====
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 'k') { e.preventDefault(); document.querySelector('.chat-search-input')?.focus(); }
         if (e.ctrlKey && e.shiftKey && e.key === 'F') { e.preventDefault(); openSearch(); }
         if (e.key === '/' && !['INPUT','TEXTAREA'].includes(e.target.tagName)) { e.preventDefault(); messageTextarea.focus(); }
+        if (e.key === '?' && !['INPUT','TEXTAREA'].includes(e.target.tagName)) { e.preventDefault(); toggleShortcutsModal(); }
     });
 
     // ===== THEME =====
@@ -1032,50 +1179,144 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ===== NEW CHAT =====
-    btnNewChat.addEventListener('click', () => {
-        const name = prompt('Enter chat name:');
-        if (!name || !name.trim()) return;
-        const id = name.trim().toLowerCase().replace(/\s+/g, '-');
-        if (chatData[id]) { switchChat(id); return; }
+    // ===== NEW CHAT MODAL =====
+    const MODAL_EMPLOYEES = [
+        { name: 'Iyanu', email: 'eiyanu15@gmail.com', avatarLetter: 'Iy' },
+        { name: 'Ifeoluwa', email: 'gr8nessassured@gmail.com', avatarLetter: 'If' },
+        { name: 'Bolanle', email: 'bolanle@onbeex.com', avatarLetter: 'Bo' },
+        { name: 'Chidi', email: 'chidi@onbeex.com', avatarLetter: 'Ch' }
+    ];
 
-        const members = [];
-        let addMore = true;
-        while (addMore) {
-            const names = prompt('Add participant(s) — enter names separated by commas, or leave blank to skip:');
-            if (!names || !names.trim()) { addMore = false; break; }
-            names.split(',').map(n => n.trim()).filter(n => n).forEach(n => {
-                const existing = ORG_EMPLOYEES.find(e => e.name.toLowerCase() === n.toLowerCase());
-                if (existing && !members.find(m => m.name === existing.name)) {
-                    members.push({ ...existing });
-                } else if (!members.find(m => m.name === n)) {
-                    members.push({ name: n, avatarLetter: n.charAt(0).toUpperCase(), role: 'Member' });
-                }
-            });
-            if (members.length > 0) addMore = !confirm('Add more participants?');
-            else addMore = false;
+    const newChatModalOverlay = $('new-chat-modal-overlay');
+    const employeeListContainer = $('new-chat-employee-list');
+    const btnSubmitNewChat = $('btn-submit-new-chat');
+    const groupNameInput = $('new-chat-group-name');
+
+    let selectedEmployees = [];
+
+    function closeNewChatModal() {
+        if (newChatModalOverlay) newChatModalOverlay.classList.remove('active');
+    }
+
+    function updateSubmitButtonState() {
+        if (btnSubmitNewChat) {
+            btnSubmitNewChat.disabled = selectedEmployees.length === 0;
         }
+    }
 
-        chatData[id] = {
-            name: name.trim(),
-            avatarLetter: name.charAt(0).toUpperCase(),
-            messages: [],
-            role: 'Custom',
-            members: members.length > 0 ? members : null,
-            isGroup: members.length > 1
-        };
-        updateConversationList();
-        switchChat(id);
-        showToast(members.length > 0 ? `Chat with ${members.length} participant(s)` : 'Conversation created', 'success');
-        saveState();
-    });
+    function renderModalEmployees() {
+        if (!employeeListContainer) return;
+        employeeListContainer.innerHTML = '';
+        selectedEmployees = [];
+
+        MODAL_EMPLOYEES.forEach(emp => {
+            const row = document.createElement('div');
+            row.className = 'employee-row';
+            row.dataset.name = emp.name;
+            row.innerHTML = `
+                <div class="employee-checkbox-wrapper">
+                    <div class="employee-select-box"></div>
+                </div>
+                <div class="employee-avatar-box">${emp.avatarLetter}</div>
+                <div class="employee-details-box">
+                    <span class="employee-name-box">${escapeHTML(emp.name)}</span>
+                    <span class="employee-email-box">${escapeHTML(emp.email)}</span>
+                </div>
+            `;
+
+            row.addEventListener('click', () => {
+                row.classList.toggle('selected');
+                const isSelected = row.classList.contains('selected');
+                if (isSelected) {
+                    selectedEmployees.push(emp);
+                } else {
+                    selectedEmployees = selectedEmployees.filter(e => e.name !== emp.name);
+                }
+                updateSubmitButtonState();
+            });
+
+            employeeListContainer.appendChild(row);
+        });
+    }
+
+    if (btnNewChat) {
+        btnNewChat.addEventListener('click', () => {
+            if (groupNameInput) groupNameInput.value = '';
+            renderModalEmployees();
+            updateSubmitButtonState();
+            if (newChatModalOverlay) newChatModalOverlay.classList.add('active');
+        });
+    }
+
+    const btnCloseNewChat = $('btn-close-new-chat');
+    const btnCancelNewChat = $('btn-cancel-new-chat');
+
+    if (btnCloseNewChat) btnCloseNewChat.addEventListener('click', closeNewChatModal);
+    if (btnCancelNewChat) btnCancelNewChat.addEventListener('click', closeNewChatModal);
+    
+    if (newChatModalOverlay) {
+        newChatModalOverlay.addEventListener('click', (e) => {
+            if (e.target === newChatModalOverlay) closeNewChatModal();
+        });
+    }
+
+    if (btnSubmitNewChat) {
+        btnSubmitNewChat.addEventListener('click', () => {
+            if (selectedEmployees.length === 0) return;
+            const customGroupName = groupNameInput ? groupNameInput.value.trim() : '';
+
+            let finalName = '';
+            let finalId = '';
+            let isGroup = false;
+
+            if (customGroupName) {
+                finalName = customGroupName;
+                isGroup = true;
+            } else {
+                if (selectedEmployees.length === 1) {
+                    finalName = selectedEmployees[0].name;
+                    isGroup = false;
+                } else {
+                    finalName = selectedEmployees.map(e => e.name).join(', ');
+                    isGroup = true;
+                }
+            }
+
+            finalId = finalName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            if (!finalId) finalId = 'chat-' + Date.now();
+
+            if (chatData[finalId]) {
+                switchChat(finalId);
+                closeNewChatModal();
+                return;
+            }
+
+            chatData[finalId] = {
+                name: finalName,
+                avatarLetter: finalName.slice(0, 2).toUpperCase(),
+                messages: [],
+                role: isGroup ? 'Group' : 'Employee',
+                members: [...selectedEmployees],
+                isGroup: isGroup,
+                lastDate: fmt(new Date())
+            };
+
+            closeNewChatModal();
+            updateConversationList();
+            switchChat(finalId);
+            showToast(isGroup ? `Group chat "${finalName}" created` : `Conversation with ${finalName} started`, 'success');
+            saveState();
+        });
+    }
 
     // ===== LOCAL STORAGE =====
     function saveState() {
         try {
             const data = { chatData, activeChatId };
             localStorage.setItem('onbeex_messages', JSON.stringify(data));
-        } catch(e) {}
+        } catch(e) {
+            console.error('LocalStorage save failed:', e);
+        }
     }
 
     function loadState() {
@@ -1086,7 +1327,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.chatData) Object.assign(chatData, data.chatData);
                 if (data.activeChatId && chatData[data.activeChatId]) activeChatId = data.activeChatId;
             }
-        } catch(e) {}
+        } catch(e) {
+            console.error('LocalStorage load failed:', e);
+        }
     }
 
     loadState();
@@ -1106,4 +1349,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isRef) setTimeout(() => referenceIdInput.focus(), 320);
         else referenceIdInput.value = '';
     });
+
+    // Dynamic search binding on conversation search input
+    const chatSearchInputEl = document.querySelector('.chat-search-input');
+    if (chatSearchInputEl) {
+        chatSearchInputEl.addEventListener('input', () => {
+            const activeFilter = document.querySelector('.filter-btn.active');
+            const filter = activeFilter ? activeFilter.dataset.filter : 'all';
+            updateConversationList(filter);
+        });
+    }
 });

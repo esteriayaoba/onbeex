@@ -52,7 +52,7 @@
                     <a href="#" class="menu-item"><i aria-hidden="true" class="menu-icon" data-lucide="users"></i><span>Employees</span></a>
                     <a href="#" class="menu-item"><i aria-hidden="true" class="menu-icon" data-lucide="user-check"></i><span>Employee Audit</span></a>
                     <a href="#" class="menu-item"><i aria-hidden="true" class="menu-icon" data-lucide="calendar-check"></i><span>Attendance</span></a>
-                    <a href="#" class="menu-item"><i aria-hidden="true" class="menu-icon" data-lucide="message-square"></i><span>Messaging</span></a>
+                    <a href="#" class="menu-item active"><i aria-hidden="true" class="menu-icon" data-lucide="message-square"></i><span>Messaging</span></a>
                     <a href="#" class="menu-item"><i aria-hidden="true" class="menu-icon" data-lucide="star"></i><span>Loyalty</span></a>
                 </div>
                 <div class="menu-group">
@@ -86,7 +86,7 @@
         <main class="main-wrapper">
             <header class="top-navbar">
                 <div class="breadcrumb">
-                    <span class="breadcrumb-root">Onbeex</span>
+                    <a href="#" class="breadcrumb-root">Onbeex</a>
                     <span class="breadcrumb-separator">/</span>
                     <span class="breadcrumb-active">Messaging</span>
                 </div>
@@ -121,14 +121,16 @@
                         <div class="pane-header">
                             <div class="pane-title-row">
                                 <h2 class="pane-title">Messages</h2>
+                                <button class="btn-new-chat" id="btn-new-chat" aria-label="New chat" title="New Chat">
+                                    <i aria-hidden="true" data-lucide="plus" class="icon-xs"></i>
+                                </button>
+                            </div>
+                            <div class="pane-filter-row">
                                 <div class="pane-filter-group">
                                     <button class="filter-btn active" data-filter="all" id="filter-all">All</button>
                                     <button class="filter-btn" data-filter="unread" id="filter-unread">Unread</button>
                                     <button class="filter-btn" data-filter="invoices" id="filter-invoices">Invoices</button>
                                 </div>
-                                <button class="btn-new-chat" id="btn-new-chat">
-                                    <i aria-hidden="true" data-lucide="plus" style="width: 14px; height: 14px;"></i>
-                                </button>
                             </div>
                             <div class="chat-search-bar">
                                 <i aria-hidden="true" class="chat-search-icon" data-lucide="search"></i>
@@ -149,15 +151,15 @@
                             </div>
                             <div class="header-action-group">
                                 <button class="action-btn" id="btn-conversation-search" aria-label="Search in conversation" title="Search in conversation">
-                                    <i aria-hidden="true" data-lucide="search" style="width: 18px; height: 18px;"></i>
+                                    <i aria-hidden="true" data-lucide="search" class="icon-md"></i>
                                 </button>
                                 <div class="dropdown-container">
                                     <button class="action-btn" id="btn-more-options" aria-label="More options" title="More options">
-                                        <i aria-hidden="true" data-lucide="more-horizontal" style="width: 18px; height: 18px;"></i>
+                                        <i aria-hidden="true" data-lucide="more-horizontal" class="icon-md"></i>
                                     </button>
                                     <div class="dropdown-menu" id="dropdown-menu">
                                         <div class="dropdown-menu-item" data-action="clear">Clear chat</div>
-                                        <div class="dropdown-menu-item" data-action="add-people"><i aria-hidden="true" data-lucide="user-plus" style="width:14px;height:14px;"></i> Add people</div>
+                                        <div class="dropdown-menu-item" data-action="add-people"><i aria-hidden="true" data-lucide="user-plus" class="icon-xs"></i> Add people</div>
                                         <div class="dropdown-menu-item" data-action="mark-unread">Mark as unread</div>
                                         <div class="dropdown-menu-item" data-action="archive">Archive</div>
                                         <div class="dropdown-menu-item" data-action="star">Star conversation</div>
@@ -168,13 +170,13 @@
                         </div>
 
                         <div class="conversation-search-bar" id="conversation-search-bar">
-                            <i aria-hidden="true" data-lucide="search" style="width: 14px; height: 14px; flex-shrink: 0; color: var(--text-muted);"></i>
+                            <i aria-hidden="true" data-lucide="search" class="icon-xs" style="flex-shrink: 0; color: var(--text-muted);"></i>
                             <input type="text" class="conversation-search-input" id="conversation-search-input" placeholder="Search messages..." autocomplete="off">
                             <span class="search-match-count" id="search-match-count"></span>
-                            <button class="search-nav-btn" id="search-prev" aria-label="Previous match"><i aria-hidden="true" data-lucide="chevron-up" style="width: 14px; height: 14px;"></i></button>
-                            <button class="search-nav-btn" id="search-next" aria-label="Next match"><i aria-hidden="true" data-lucide="chevron-down" style="width: 14px; height: 14px;"></i></button>
+                            <button class="search-nav-btn" id="search-prev" aria-label="Previous match"><i aria-hidden="true" data-lucide="chevron-up" class="icon-xs"></i></button>
+                            <button class="search-nav-btn" id="search-next" aria-label="Next match"><i aria-hidden="true" data-lucide="chevron-down" class="icon-xs"></i></button>
                             <button class="conversation-search-close" id="conversation-search-close">
-                                <i aria-hidden="true" data-lucide="x" style="width: 14px; height: 14px;"></i>
+                                <i aria-hidden="true" data-lucide="x" class="icon-xs"></i>
                             </button>
                         </div>
 
@@ -187,7 +189,7 @@
                                 <div class="reply-preview-text" id="reply-preview-text"></div>
                             </div>
                             <button class="reply-preview-close" id="reply-preview-close" aria-label="Cancel reply">
-                                <i aria-hidden="true" data-lucide="x" style="width: 14px; height: 14px;"></i>
+                                <i aria-hidden="true" data-lucide="x" class="icon-xs"></i>
                             </button>
                         </div>
 
@@ -201,13 +203,13 @@
                                 <div class="console-toolbar">
                                     <div class="toolbar-left">
                                         <button class="toolbar-icon-btn" id="btn-emoji" type="button" title="Emoji">
-                                            <i aria-hidden="true" data-lucide="smile-plus" style="width: 16px; height: 16px;"></i>
+                                            <i aria-hidden="true" data-lucide="smile-plus" class="icon-sm"></i>
                                         </button>
                                         <button class="toolbar-icon-btn" id="btn-attach" type="button" title="Attach files">
-                                            <i aria-hidden="true" data-lucide="paperclip" style="width: 16px; height: 16px;"></i>
+                                            <i aria-hidden="true" data-lucide="paperclip" class="icon-sm"></i>
                                         </button>
                                         <button class="toolbar-icon-btn" id="btn-invoice" type="button" title="Share Invoice">
-                                            <i aria-hidden="true" data-lucide="receipt" style="width: 16px; height: 16px;"></i>
+                                            <i aria-hidden="true" data-lucide="receipt" class="icon-sm"></i>
                                         </button>
                                         <div class="reference-select-wrapper">
                                             <select class="console-select" id="reference-type-select">
@@ -224,14 +226,28 @@
                                     </div>
                                     <div class="toolbar-right">
                                         <button class="toolbar-icon-btn" id="btn-voice" type="button" title="Voice note">
-                                            <i aria-hidden="true" data-lucide="mic" style="width: 16px; height: 16px;"></i>
+                                            <i aria-hidden="true" data-lucide="mic" class="icon-sm"></i>
                                         </button>
                                         <button class="toolbar-btn-send" id="btn-send-message" type="button">
                                             <span>Send</span>
-                                            <i aria-hidden="true" data-lucide="send" style="width: 14px; height: 14px;"></i>
+                                            <i aria-hidden="true" data-lucide="send" class="icon-xs"></i>
                                         </button>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Emoji Picker -->
+                            <div class="emoji-picker" id="emoji-picker">
+                                <div class="emoji-picker-header">Emoji</div>
+                                <div class="emoji-picker-grid" id="emoji-picker-grid"></div>
+                            </div>
+
+                            <!-- Attach Menu -->
+                            <div class="attach-menu" id="attach-menu">
+                                <div class="attach-menu-item" data-type="image"><i aria-hidden="true" data-lucide="image" class="icon-sm"></i> Image</div>
+                                <div class="attach-menu-item" data-type="document"><i aria-hidden="true" data-lucide="file-text" class="icon-sm"></i> Document</div>
+                                <div class="attach-menu-item" data-type="pdf"><i aria-hidden="true" data-lucide="file" class="icon-sm"></i> PDF</div>
+                                <div class="attach-menu-item" data-type="spreadsheet"><i aria-hidden="true" data-lucide="grid" class="icon-sm"></i> Spreadsheet</div>
                             </div>
                         </div>
                     </div>
@@ -240,13 +256,21 @@
                     <div class="thread-panel" id="thread-panel">
                         <div class="thread-panel-header">
                             <span class="thread-panel-title">Thread</span>
-                            <button class="thread-panel-close" id="thread-panel-close" aria-label="Close thread"><i aria-hidden="true" data-lucide="x" style="width: 16px; height: 16px;"></i></button>
+                            <button class="thread-panel-close" id="thread-panel-close" aria-label="Close thread"><i aria-hidden="true" data-lucide="x" class="icon-sm"></i></button>
                         </div>
                         <div class="thread-panel-parent" id="thread-panel-parent"></div>
                         <div class="thread-panel-replies" id="thread-panel-replies"></div>
                         <div class="thread-panel-composer">
                             <textarea class="thread-panel-textarea" id="thread-panel-textarea" placeholder="Reply in thread..." rows="2"></textarea>
-                            <button class="thread-panel-send" id="thread-panel-send"><i aria-hidden="true" data-lucide="send" style="width: 14px; height: 14px;"></i></button>
+                            <button class="thread-panel-send" id="thread-panel-send"><i aria-hidden="true" data-lucide="send" class="icon-xs"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Drag & Drop Overlay -->
+                    <div class="drop-overlay" id="drop-overlay">
+                        <div class="drop-overlay-content">
+                            <i aria-hidden="true" data-lucide="upload-cloud" class="icon-2xl"></i>
+                            <span>Drop files to attach</span>
                         </div>
                     </div>
                 </div>
@@ -254,41 +278,81 @@
         </main>
     </div>
 
-    <!-- Emoji Picker -->
-    <div class="emoji-picker" id="emoji-picker">
-        <div class="emoji-picker-header">Emoji</div>
-        <div class="emoji-picker-grid" id="emoji-picker-grid"></div>
-    </div>
-
     <!-- Image Lightbox -->
     <div class="lightbox" id="lightbox">
-        <button class="lightbox-close" id="lightbox-close" aria-label="Close"><i aria-hidden="true" data-lucide="x" style="width: 24px; height: 24px;"></i></button>
-        <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous"><i aria-hidden="true" data-lucide="chevron-left" style="width: 32px; height: 32px;"></i></button>
+        <button class="lightbox-close" id="lightbox-close" aria-label="Close"><i aria-hidden="true" data-lucide="x" class="icon-lg"></i></button>
+        <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous"><i aria-hidden="true" data-lucide="chevron-left" class="icon-xl"></i></button>
         <img class="lightbox-image" id="lightbox-image" alt="Preview">
-        <button class="lightbox-next" id="lightbox-next" aria-label="Next"><i aria-hidden="true" data-lucide="chevron-right" style="width: 32px; height: 32px;"></i></button>
+        <button class="lightbox-next" id="lightbox-next" aria-label="Next"><i aria-hidden="true" data-lucide="chevron-right" class="icon-xl"></i></button>
         <div class="lightbox-info" id="lightbox-info"></div>
     </div>
 
     <!-- Offline Banner -->
     <div class="offline-banner" id="offline-banner">
-        <i aria-hidden="true" data-lucide="wifi-off" style="width: 14px; height: 14px;"></i>
+        <i aria-hidden="true" data-lucide="wifi-off" class="icon-xs"></i>
         <span>You're offline. Messages will send when reconnected.</span>
     </div>
 
-    <!-- Drag & Drop Overlay -->
-    <div class="drop-overlay" id="drop-overlay">
-        <div class="drop-overlay-content">
-            <i aria-hidden="true" data-lucide="upload-cloud" style="width: 48px; height: 48px;"></i>
-            <span>Drop files to attach</span>
+    <!-- Keyboard Shortcuts Modal -->
+    <div class="shortcuts-modal-overlay" id="shortcuts-modal-overlay">
+        <div class="shortcuts-modal">
+            <h3>Keyboard Shortcuts</h3>
+            <div class="shortcut-row">
+                <span class="shortcut-label">Search conversations</span>
+                <div class="shortcut-keys">
+                    <kbd class="shortcut-key">Ctrl</kbd>
+                    <kbd class="shortcut-key">K</kbd>
+                </div>
+            </div>
+            <div class="shortcut-row">
+                <span class="shortcut-label">Search messages in chat</span>
+                <div class="shortcut-keys">
+                    <kbd class="shortcut-key">Ctrl</kbd>
+                    <kbd class="shortcut-key">Shift</kbd>
+                    <kbd class="shortcut-key">F</kbd>
+                </div>
+            </div>
+            <div class="shortcut-row">
+                <span class="shortcut-label">Focus message text input</span>
+                <div class="shortcut-keys">
+                    <kbd class="shortcut-key">/</kbd>
+                </div>
+            </div>
+            <div class="shortcut-row">
+                <span class="shortcut-label">Show / hide shortcuts</span>
+                <div class="shortcut-keys">
+                    <kbd class="shortcut-key">?</kbd>
+                </div>
+            </div>
+            <div style="text-align: right; margin-top: 16px;">
+                <button class="invoice-card-btn primary" id="btn-close-shortcuts" style="width: auto; padding: 6px 16px;">Close</button>
+            </div>
         </div>
     </div>
 
-    <!-- Attach Menu -->
-    <div class="attach-menu" id="attach-menu">
-        <div class="attach-menu-item" data-type="image"><i aria-hidden="true" data-lucide="image"></i> Image</div>
-        <div class="attach-menu-item" data-type="document"><i aria-hidden="true" data-lucide="file-text"></i> Document</div>
-        <div class="attach-menu-item" data-type="pdf"><i aria-hidden="true" data-lucide="file"></i> PDF</div>
-        <div class="attach-menu-item" data-type="spreadsheet"><i aria-hidden="true" data-lucide="grid"></i> Spreadsheet</div>
+    <!-- New Chat Modal Overlay -->
+    <div class="modal-overlay" id="new-chat-modal-overlay">
+        <div class="new-chat-modal">
+            <div class="new-chat-modal-header">
+                <h3>New Chat</h3>
+                <button class="modal-close-btn" id="btn-close-new-chat" aria-label="Close modal"><i aria-hidden="true" data-lucide="x" class="icon-sm"></i></button>
+            </div>
+            <div class="new-chat-modal-body">
+                <div class="form-group">
+                    <label for="new-chat-group-name" class="form-label">Group name (optional)</label>
+                    <input type="text" class="form-input" id="new-chat-group-name" placeholder="e.g. Warehouse Team" autocomplete="off">
+                </div>
+                <div class="employee-list-container">
+                    <div class="employee-list" id="new-chat-employee-list">
+                        <!-- Dynamic list of employees will be rendered here -->
+                    </div>
+                </div>
+            </div>
+            <div class="new-chat-modal-footer">
+                <button class="modal-btn-cancel" id="btn-cancel-new-chat">Cancel</button>
+                <button class="modal-btn-submit" id="btn-submit-new-chat" disabled>Create Chat</button>
+            </div>
+        </div>
     </div>
 
     <!-- Toast Container -->
